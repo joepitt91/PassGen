@@ -1,4 +1,4 @@
-﻿namespace PassGen
+﻿namespace JoePitt.PassGen
 {
     partial class frmPassGen
     {

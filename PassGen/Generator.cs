@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace PassGen
+namespace JoePitt.PassGen
 {
     public class Generator
     {

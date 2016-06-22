@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace PassGen
+namespace JoePitt.PassGen
 {
     public partial class frmPassGen : Form
     {
@@ -10,8 +10,8 @@ namespace PassGen
             InitializeComponent();
 
             bkgGetPasswords.DoWork += BkgGetPasswords_DoWork;
-            this.FormClosing += FrmPassGen_FormClosing;
-            this.HelpButtonClicked += FrmPassGen_HelpButtonClicked;
+            FormClosing += FrmPassGen_FormClosing;
+            HelpButtonClicked += FrmPassGen_HelpButtonClicked;
         }
 
         /// <summary>

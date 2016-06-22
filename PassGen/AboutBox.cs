@@ -3,19 +3,19 @@ using System.Deployment.Application;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace PassGen
+namespace JoePitt.PassGen
 {
     partial class AboutBox : Form
     {
         public AboutBox()
         {
             InitializeComponent();
-            this.Text = String.Format("About {0}", AssemblyTitle);
-            this.labelProductName.Text = AssemblyProduct;
-            this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
-            this.labelCopyright.Text = AssemblyCopyright;
-            this.textBoxDescription.Text = AssemblyDescription;
-            this.textBoxDescription.Text = this.textBoxDescription.Text +
+            Text = String.Format("About {0}", AssemblyTitle);
+            labelProductName.Text = AssemblyProduct;
+            labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
+            labelCopyright.Text = AssemblyCopyright;
+            textBoxDescription.Text = AssemblyDescription;
+            textBoxDescription.Text = textBoxDescription.Text +
                 Environment.NewLine + Environment.NewLine +
                 "Instructions for Use" + Environment.NewLine + Environment.NewLine +
                 "1. Choose the character set you want to use and the required length." + Environment.NewLine +

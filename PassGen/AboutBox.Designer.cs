@@ -1,4 +1,4 @@
-﻿namespace PassGen
+﻿namespace JoePitt.PassGen
 {
     partial class AboutBox
     {
@@ -117,7 +117,7 @@
             // 
             // okButton
             // 
-            this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.okButton.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.okButton.Location = new System.Drawing.Point(339, 240);
             this.okButton.Name = "okButton";
@@ -127,7 +127,7 @@
             // 
             // picCCLogo
             // 
-            this.picCCLogo.Image = global::PassGen.Properties.Resources.cc_by_nc_sa;
+            this.picCCLogo.Image = Properties.Resources.cc_by_nc_sa;
             this.picCCLogo.Location = new System.Drawing.Point(3, 81);
             this.picCCLogo.Name = "picCCLogo";
             this.picCCLogo.Size = new System.Drawing.Size(131, 153);
@@ -138,7 +138,7 @@
             // 
             // imgDonate
             // 
-            this.imgDonate.Image = global::PassGen.Properties.Resources.donate;
+            this.imgDonate.Image = Properties.Resources.donate;
             this.imgDonate.Location = new System.Drawing.Point(3, 240);
             this.imgDonate.Name = "imgDonate";
             this.imgDonate.Size = new System.Drawing.Size(131, 22);

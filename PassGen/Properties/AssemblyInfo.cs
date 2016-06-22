@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Joe Pitt")]
 [assembly: AssemblyProduct("PassGen")]
-[assembly: AssemblyCopyright("Copyright © Joe Pitt 2015")]
+[assembly: AssemblyCopyright("Copyright © Joe Pitt 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
