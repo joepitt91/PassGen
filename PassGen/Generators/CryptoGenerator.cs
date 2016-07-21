@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace JoePitt.PassGen
+namespace JoePitt.PassGen.Generators
 {
-    public class Generator
+    public class CryptoGenerator
     {
         /// <summary>
         /// Generates a cryptographically strong seed for the Random class.
         /// </summary>
         /// <returns>The cryptographically strong seed.</returns>
-        private static int NewSeed()
+        private int NewSeed()
         {
             RNGCryptoServiceProvider SeedGen = new RNGCryptoServiceProvider();
             byte[] Seed = new byte[4];
@@ -28,7 +28,7 @@ namespace JoePitt.PassGen
         /// <param name="space">If the space character set is to be used.</param>
         /// <param name="requireAll">If all the enabled character sets must be present.</param>
         /// <returns></returns>
-        public static string NewPass(int length, bool lower, bool upper, bool number, bool special, bool space, bool requireAll)
+        public string Next(int length, bool lower, bool upper, bool number, bool special, bool space, bool requireAll)
         {
             // Define ASCII Character Set in groups.
             string lowerSet = "abcdefghijklmnopqrstuvwxyz";

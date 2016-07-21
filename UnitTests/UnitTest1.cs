@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PassGen;
+using JoePitt.PassGen;
+using JoePitt.PassGen.Generators;
 using System.Collections.Generic;
 
 namespace UnitTests
@@ -16,7 +17,7 @@ namespace UnitTests
             int i = 0;
             while (Passwords.Count < count)
             {
-                string password = Generator.NewPass(8, true, true, true, true, true, true);
+                string password = CryptoGenerator.Next(8, true, true, true, true, true, true);
                 if (!Passwords.Contains(password))
                 {
                     Passwords.Add(password);
@@ -39,7 +40,7 @@ namespace UnitTests
             int i = 0;
             while (Passwords.Count < count)
             {
-                string password = Generator.NewPass(8, true, true, true, true, true, true);
+                string password = CryptoGenerator.Next(8, true, true, true, true, true, true);
                 if (!Passwords.Contains(password))
                 {
                     Passwords.Add(password);
@@ -62,7 +63,7 @@ namespace UnitTests
             int i = 0;
             while (Passwords.Count < count)
             {
-                string password = Generator.NewPass(8, true, true, true, true, true, true);
+                string password = CryptoGenerator.Next(8, true, true, true, true, true, true);
                 if (!Passwords.Contains(password))
                 {
                     Passwords.Add(password);
@@ -85,7 +86,7 @@ namespace UnitTests
             int i = 0;
             while (Passwords.Count < count)
             {
-                string password = Generator.NewPass(8, true, true, true, true, true, true);
+                string password = CryptoGenerator.Next(8, true, true, true, true, true, true);
                 if (!Passwords.Contains(password))
                 {
                     Passwords.Add(password);
@@ -108,7 +109,7 @@ namespace UnitTests
             int i = 0;
             while (Passwords.Count < count)
             {
-                string password = Generator.NewPass(8, true, true, true, true, true, true);
+                string password = CryptoGenerator.Next(8, true, true, true, true, true, true);
                 if (!Passwords.Contains(password))
                 {
                     Passwords.Add(password);

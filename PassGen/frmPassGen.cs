@@ -1,24 +1,28 @@
-﻿using System;
+﻿using JoePitt.PassGen.Generators;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace JoePitt.PassGen
 {
     public partial class frmPassGen : Form
     {
+        List<char> WordsFormat = new List<char>() { 'D', 'A', 'N' };
+
         public frmPassGen()
         {
             InitializeComponent();
-
-            bkgGetPasswords.DoWork += BkgGetPasswords_DoWork;
+            bkgCryptoGen.DoWork += bkgCryptoGen_DoWork;
+            bkgCryptoGen.RunWorkerCompleted += BkgCryptoGen_RunWorkerCompleted;
+            bkgWordsGen.DoWork += BkgWordsGen_DoWork;
+            bkgWordsGen.RunWorkerCompleted += BkgWordsGen_RunWorkerCompleted;
             FormClosing += FrmPassGen_FormClosing;
             HelpButtonClicked += FrmPassGen_HelpButtonClicked;
+            tbgGenerators.SelectedIndexChanged += TbgGenerators_SelectedIndexChanged;
         }
 
-        /// <summary>
-        /// Restores the User's settings once the form has initialised.
-        /// </summary>
-        /// <param name="sender">System Generated.</param>
-        /// <param name="e">System Generated.</param>
         private void frmPassGen_Load(object sender, EventArgs e)
         {
             // Restore Settings. Revert to defaults if there are any errors.
@@ -38,11 +42,6 @@ namespace JoePitt.PassGen
             }
         }
 
-        /// <summary>
-        /// Shows the about box including instructions for use and licensing.
-        /// </summary>
-        /// <param name="sender">System Generated.</param>
-        /// <param name="e">System Generated.</param>
         private void FrmPassGen_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e)
         {
             AboutBox dlgAbout = new AboutBox();
@@ -50,63 +49,20 @@ namespace JoePitt.PassGen
             e.Cancel = true;
         }
 
-        /// <summary>
-        /// Generates 10 passwords and updates the UI without causing the UI to not respond.
-        /// </summary>
-        /// <param name="sender">System Generated.</param>
-        /// <param name="e">System Generated.</param>
-        private void BkgGetPasswords_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        private void TbgGenerators_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Block the UI Controls.
-            Action BlockUI = () => grpSettings.Enabled = false;
-            grpSettings.Invoke(BlockUI);
-
-            // Generate Passwords based on the settings defined.
-            string[] Password = new string[10];
-            int i = 0;
-            while (i < 10)
+            if (tbgGenerators.SelectedTab == tabCrypto)
             {
-                Password[i] = Generator.NewPass((int)numLength.Value, chkLower.Checked, chkUpper.Checked, chkNumber.Checked, chkSpecial.Checked, chkSpace.Checked, chkIncludeAll.Checked);
-                i++;
+                AcceptButton = btnGenerate;
+                CancelButton = btnGenerate;
             }
-
-            BeginInvoke((MethodInvoker)delegate
+            else if (tbgGenerators.SelectedTab == tabWords)
             {
-                // Update UI with Generated Passwords.
-                txtPass01.Text = Password[0];
-                txtPass02.Text = Password[1];
-                txtPass03.Text = Password[2];
-                txtPass04.Text = Password[3];
-                txtPass05.Text = Password[4];
-                txtPass06.Text = Password[5];
-                txtPass07.Text = Password[6];
-                txtPass08.Text = Password[7];
-                txtPass09.Text = Password[8];
-                txtPass10.Text = Password[9];
-
-                // Select all text to make copying easier.
-                txtPass01.SelectAll();
-                txtPass02.SelectAll();
-                txtPass03.SelectAll();
-                txtPass04.SelectAll();
-                txtPass05.SelectAll();
-                txtPass06.SelectAll();
-                txtPass07.SelectAll();
-                txtPass08.SelectAll();
-                txtPass09.SelectAll();
-                txtPass10.SelectAll();
-            });
-
-            // Unblock the UI Controls.
-            Action UnblockUI = () => grpSettings.Enabled = true;
-            grpSettings.Invoke(UnblockUI);
+                AcceptButton = btnGenerateWords;
+                CancelButton = btnGenerateWords;
+            }
         }
-
-        /// <summary>
-        /// Saves settings as the form closes.
-        /// </summary>
-        /// <param name="sender">System Generated.</param>
-        /// <param name="e">System Generated.</param>
+        
         private void FrmPassGen_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Save Settings.
@@ -120,11 +76,44 @@ namespace JoePitt.PassGen
             Properties.Settings.Default.Save();
         }
 
-        /// <summary>
-        /// Carries out checks, then tirggers BkgGetPasswords_DoWork via a Background Worker.
-        /// </summary>
-        /// <param name="sender">System Generated.</param>
-        /// <param name="e">System Generated.</param>
+        // Crypto
+        private void bkgCryptoGen_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            // Block the UI Controls.
+            Action BlockUI = () => grpCryptoSettings.Enabled = false;
+            grpCryptoSettings.Invoke(BlockUI);
+
+            // Generate Passwords based on the settings defined.
+            CryptoGenerator Generator = new CryptoGenerator();
+            List<string> Passwords = new List<string>();
+            int i = 0;
+            while (i < 10)
+            {
+                Passwords.Add(Generator.Next((int)numLength.Value, chkLower.Checked, chkUpper.Checked, chkNumber.Checked, chkSpecial.Checked, chkSpace.Checked, chkIncludeAll.Checked));
+                i++;
+            }
+            // Update UI
+            BeginInvoke((MethodInvoker)delegate
+            {
+                int j = 0;
+                foreach (TextBox pwBox in tabCrypto.Controls.OfType<TextBox>())
+                {
+                    pwBox.Text = Passwords[j];
+                    pwBox.Select(0, 0);
+                }
+            });
+
+            // Unblock the UI Controls.
+            Action UnblockUI = () => grpCryptoSettings.Enabled = true;
+            grpCryptoSettings.Invoke(UnblockUI);
+        }
+
+        private void BkgCryptoGen_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            tbgGenerators.SelectedTab = tabCrypto;
+            txtCrypto01.Focus();
+        }
+
         private void btnGenerate_Click(object sender, EventArgs e)
         {
             // Save Settings.
@@ -145,10 +134,133 @@ namespace JoePitt.PassGen
             }
 
             // Prevent exceptions when holding enter for new passwords.
-            if (!bkgGetPasswords.IsBusy)
+            if (!bkgCryptoGen.IsBusy)
             {
                 // Generate Passwords without blocking UI.
-                bkgGetPasswords.RunWorkerAsync();
+                bkgCryptoGen.RunWorkerAsync();
+                tbgGenerators.Focus();
+            }
+        }
+
+        // Words
+        private void BkgWordsGen_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            // Lock UI
+            Action BlockUI = () => grpWordsSettings.Enabled = false;
+            grpWordsSettings.Invoke(BlockUI);
+
+            // Generate Passwords based on the settings defined.
+            WordsGenerator Generator = new WordsGenerator();
+            List<string> Passwords = new List<string>();
+            int i = 0;
+            while (i < 10)
+            {
+                string Password = "";
+                foreach (char WordType in WordsFormat)
+                {
+                    switch (WordType)
+                    {
+                        case 'A':
+                            Password = Password + Generator.Adjective();
+                            break;
+                        case 'D':
+                            Password = Password + Generator.Adverb();
+                            break;
+                        case 'N':
+                            Password = Password + Generator.Noun();
+                            break;
+                        case 'V':
+                            Password = Password + Generator.Verb();
+                            break;
+                    }
+                }
+                Passwords.Add(Password);
+                i++;
+            }
+            // Update UI
+            BeginInvoke((MethodInvoker)delegate
+            {
+                int j = 0;
+                foreach (TextBox pwBox in tabWords.Controls.OfType<TextBox>())
+                {
+                    pwBox.Text = Passwords[j];
+                    pwBox.Select(0, 0);
+                    j++;
+                }
+            });
+
+            // Unblock the UI Controls.
+            Action UnblockUI = () => grpWordsSettings.Enabled = true;
+            grpWordsSettings.Invoke(UnblockUI);
+        }
+
+        private void BkgWordsGen_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            tbgGenerators.SelectedTab = tabWords;
+            txtWords01.Focus();
+        }
+
+        private void UpdateWordsFormat()
+        {
+            txtWordsFormat.Text = "";
+            foreach (char Type in WordsFormat)
+            {
+                switch (Type)
+                {
+                    case 'A':
+                        txtWordsFormat.Text = txtWordsFormat.Text + "Adjective";
+                        break;
+                    case 'D':
+                        txtWordsFormat.Text = txtWordsFormat.Text + "Adverb";
+                        break;
+                    case 'N':
+                        txtWordsFormat.Text = txtWordsFormat.Text + "Noun";
+                        break;
+                    case 'V':
+                        txtWordsFormat.Text = txtWordsFormat.Text + "Verb";
+                        break;
+                }
+            }
+        }
+
+        private void btnAdjective_Click(object sender, EventArgs e)
+        {
+            WordsFormat.Add('A');
+            UpdateWordsFormat();
+        }
+
+        private void btnAdverb_Click(object sender, EventArgs e)
+        {
+            WordsFormat.Add('D');
+            UpdateWordsFormat();
+        }
+
+        private void btnNoun_Click(object sender, EventArgs e)
+        {
+            WordsFormat.Add('N');
+            UpdateWordsFormat();
+        }
+
+        private void btnVerb_Click(object sender, EventArgs e)
+        {
+            WordsFormat.Add('V');
+            UpdateWordsFormat();
+        }
+
+        private void btnWordsClear_Click(object sender, EventArgs e)
+        {
+            WordsFormat.Clear();
+            UpdateWordsFormat();
+        }
+
+        private void btnGenerateWords_Click(object sender, EventArgs e)
+        {
+            // Prevent exceptions when holding enter for new passwords.
+            if (!bkgWordsGen.IsBusy)
+            {
+                // Generate Passwords without blocking UI.
+                bkgWordsGen.RunWorkerAsync();
+                tbgGenerators.Focus();
             }
         }
     }

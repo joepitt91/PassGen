@@ -114,7 +114,8 @@
     <Compile Include="frmPassGen.Designer.cs">
       <DependentUpon>frmPassGen.cs</DependentUpon>
     </Compile>
-    <Compile Include="Generator.cs" />
+    <Compile Include="Generators\CryptoGenerator.cs" />
+    <Compile Include="Generators\WordsGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AboutBox.resx">
