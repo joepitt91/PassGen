@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
 using System.Xml;
+using System.Security.Cryptography;
 
 namespace JoePitt.PassGen.Generators
 {
@@ -10,10 +12,17 @@ namespace JoePitt.PassGen.Generators
     {
         private WebClient Client { get; set; }
         private XmlDocument Reader { get; set; }
-        public bool AdjectivesFile { get; private set; }
-        public bool AdverbsFile { get; private set; }
-        public bool NounsFile { get; private set; }
-        public bool VerbsFile { get; private set; }
+        public bool AdjectiveFile { get; private set; }
+        public bool AdverbFile { get; private set; }
+        public bool NounFile { get; private set; }
+        public bool VerbFile { get; private set; }
+
+        public string DictionaryBase { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PassGen\\";
+
+        public string AdjectiveFilePath { get; private set; }
+        public string AdverbFilePath { get; private set; }
+        public string NounFilePath { get; private set; }
+        public string VerbFilePath { get; private set; }
 
 
         public WordsGenerator()
@@ -21,17 +30,41 @@ namespace JoePitt.PassGen.Generators
             Client = new WebClient();
             Client.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
             Reader = new XmlDocument();
-            AdjectivesFile = File.Exists("\\Adjecrtives.txt");
-            AdverbsFile = File.Exists("\\Adverbs.txt");
-            NounsFile = File.Exists("\\Nouns.txt");
-            VerbsFile = File.Exists("\\Verbs.txt");
+
+            if (File.Exists(DictionaryBase + "Adjectives.txt"))
+            {
+                AdjectiveFile = true;
+                AdjectiveFilePath = DictionaryBase + "Adjectives.txt";
+            }
+            if (File.Exists(DictionaryBase + "Adverbs.txt"))
+            {
+                AdverbFile = true;
+                AdverbFilePath = DictionaryBase + "Adverbs.txt";
+            }
+            if (File.Exists(DictionaryBase + "Nouns.txt"))
+            {
+                NounFile = true;
+                NounFilePath = DictionaryBase + "Nouns.txt";
+            }
+            if (File.Exists(DictionaryBase + "Verbs.txt"))
+            {
+                VerbFile = true;
+                VerbFilePath = DictionaryBase + "Verbs.txt";
+            }
         }
 
         public string Adjective()
         {
-            if (AdjectivesFile)
+            if (AdjectiveFile)
             {
-                return "ADJECTIVE-HERE";
+                List<string> adjectives = new List<string>();
+                adjectives.AddRange(File.ReadAllLines(AdjectiveFilePath));
+                RNGCryptoServiceProvider seeder = new RNGCryptoServiceProvider();
+                byte[] seedBytes = new byte[4];
+                seeder.GetBytes(seedBytes);
+                int seed = BitConverter.ToInt32(seedBytes, 0);
+                Random random = new Random(seed);
+                return adjectives[random.Next(0, adjectives.Count)];
             }
             else
             {
@@ -57,9 +90,16 @@ namespace JoePitt.PassGen.Generators
 
         public string Adverb()
         {
-            if (AdverbsFile)
+            if (AdverbFile)
             {
-                return "ADVERB-HERE";
+                List<string> adverbs = new List<string>();
+                adverbs.AddRange(File.ReadAllLines(AdverbFilePath));
+                RNGCryptoServiceProvider seeder = new RNGCryptoServiceProvider();
+                byte[] seedBytes = new byte[4];
+                seeder.GetBytes(seedBytes);
+                int seed = BitConverter.ToInt32(seedBytes, 0);
+                Random random = new Random(seed);
+                return adverbs[random.Next(0, adverbs.Count)];
             }
             else
             {
@@ -84,9 +124,16 @@ namespace JoePitt.PassGen.Generators
 
         public string Noun()
         {
-            if (NounsFile)
+            if (NounFile)
             {
-                return "NOUN-HERE";
+                List<string> nouns = new List<string>();
+                nouns.AddRange(File.ReadAllLines(NounFilePath));
+                RNGCryptoServiceProvider seeder = new RNGCryptoServiceProvider();
+                byte[] seedBytes = new byte[4];
+                seeder.GetBytes(seedBytes);
+                int seed = BitConverter.ToInt32(seedBytes, 0);
+                Random random = new Random(seed);
+                return nouns[random.Next(0, nouns.Count)];
             }
             else
             {
@@ -111,9 +158,16 @@ namespace JoePitt.PassGen.Generators
 
         public string Verb()
         {
-            if (VerbsFile)
+            if (VerbFile)
             {
-                return "VERB-HERE";
+                List<string> verbs = new List<string>();
+                verbs.AddRange(File.ReadAllLines(VerbFilePath));
+                RNGCryptoServiceProvider seeder = new RNGCryptoServiceProvider();
+                byte[] seedBytes = new byte[4];
+                seeder.GetBytes(seedBytes);
+                int seed = BitConverter.ToInt32(seedBytes, 0);
+                Random random = new Random(seed);
+                return verbs[random.Next(0, verbs.Count)];
             }
             else
             {
