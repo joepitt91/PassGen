@@ -110,6 +110,7 @@ namespace JoePitt.PassGen
                 {
                     pwBox.Text = Passwords[j];
                     pwBox.Select(0, 0);
+                    j++;
                 }
             });
 
