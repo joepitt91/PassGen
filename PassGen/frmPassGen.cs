@@ -167,26 +167,7 @@ namespace JoePitt.PassGen
             int i = 0;
             while (i < 10)
             {
-                string Password = "";
-                foreach (char WordType in WordsFormat)
-                {
-                    switch (WordType)
-                    {
-                        case 'A':
-                            Password = Password + Generator.Adjective();
-                            break;
-                        case 'D':
-                            Password = Password + Generator.Adverb();
-                            break;
-                        case 'N':
-                            Password = Password + Generator.Noun();
-                            break;
-                        case 'V':
-                            Password = Password + Generator.Verb();
-                            break;
-                    }
-                }
-                Passwords.Add(Password);
+                Passwords.Add(Generator.Next(WordsFormat));
                 i++;
             }
             // Update UI

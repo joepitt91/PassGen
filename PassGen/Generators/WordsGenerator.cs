@@ -189,5 +189,29 @@ namespace JoePitt.PassGen.Generators
                 return Word;
             }
         }
+
+        public string Next(List<char> Format)
+        {
+            string Password = "";
+            foreach (char WordType in Format)
+            {
+                switch (WordType)
+                {
+                    case 'A':
+                        Password = Password + Adjective();
+                        break;
+                    case 'D':
+                        Password = Password + Adverb();
+                        break;
+                    case 'N':
+                        Password = Password + Noun();
+                        break;
+                    case 'V':
+                        Password = Password + Verb();
+                        break;
+                }
+            }
+            return Password;
+        }
     }
 }
