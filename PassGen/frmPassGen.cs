@@ -9,18 +9,23 @@ namespace JoePitt.PassGen
 {
     public partial class frmPassGen : Form
     {
-        List<char> WordsFormat = new List<char>() { 'D', 'A', 'N' };
-
+        //General
         public frmPassGen()
         {
+            //General
             InitializeComponent();
-            bkgCryptoGen.DoWork += bkgCryptoGen_DoWork;
-            bkgCryptoGen.RunWorkerCompleted += BkgCryptoGen_RunWorkerCompleted;
-            bkgWordsGen.DoWork += BkgWordsGen_DoWork;
-            bkgWordsGen.RunWorkerCompleted += BkgWordsGen_RunWorkerCompleted;
             FormClosing += FrmPassGen_FormClosing;
             HelpButtonClicked += FrmPassGen_HelpButtonClicked;
             tbgGenerators.SelectedIndexChanged += TbgGenerators_SelectedIndexChanged;
+            //Crypto
+            bkgCryptoGen.DoWork += bkgCryptoGen_DoWork;
+            bkgCryptoGen.RunWorkerCompleted += BkgCryptoGen_RunWorkerCompleted;
+            //Words
+            bkgWordsGen.DoWork += BkgWordsGen_DoWork;
+            bkgWordsGen.RunWorkerCompleted += BkgWordsGen_RunWorkerCompleted;
+            //CVC
+            bkgCVCGen.DoWork += BkgCVCGen_DoWork;
+            bkgCVCGen.RunWorkerCompleted += BkgCVCGen_RunWorkerCompleted;
         }
 
         private void frmPassGen_Load(object sender, EventArgs e)
@@ -28,13 +33,13 @@ namespace JoePitt.PassGen
             // Restore Settings. Revert to defaults if there are any errors.
             try
             {
-                chkLower.Checked = Properties.Settings.Default.Lower;
-                chkUpper.Checked = Properties.Settings.Default.Upper;
-                chkNumber.Checked = Properties.Settings.Default.Number;
-                chkSpecial.Checked = Properties.Settings.Default.Special;
-                chkSpace.Checked = Properties.Settings.Default.Space;
-                chkIncludeAll.Checked = Properties.Settings.Default.IncludeAll;
-                numLength.Value = Properties.Settings.Default.Length;
+                chkCryptoLower.Checked = Properties.Settings.Default.Lower;
+                chkCryptoUpper.Checked = Properties.Settings.Default.Upper;
+                chkCryptoNumber.Checked = Properties.Settings.Default.Number;
+                chkCryptoSpecial.Checked = Properties.Settings.Default.Special;
+                chkCryptoSpace.Checked = Properties.Settings.Default.Space;
+                chkCryptoIncludeAll.Checked = Properties.Settings.Default.IncludeAll;
+                numCryptoLength.Value = Properties.Settings.Default.Length;
             }
             catch
             {
@@ -53,26 +58,31 @@ namespace JoePitt.PassGen
         {
             if (tbgGenerators.SelectedTab == tabCrypto)
             {
-                AcceptButton = btnGenerate;
-                CancelButton = btnGenerate;
+                AcceptButton = btnCryptoGenerate;
+                CancelButton = btnCryptoGenerate;
             }
             else if (tbgGenerators.SelectedTab == tabWords)
             {
-                AcceptButton = btnGenerateWords;
-                CancelButton = btnGenerateWords;
+                AcceptButton = btnWordsGenerate;
+                CancelButton = btnWordsGenerate;
+            }
+            else if (tbgGenerators.SelectedTab == tabCVC)
+            {
+                AcceptButton = btnCVCGenerate;
+                CancelButton = btnCVCGenerate;
             }
         }
         
         private void FrmPassGen_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Save Settings.
-            Properties.Settings.Default.Lower = chkLower.Checked;
-            Properties.Settings.Default.Upper = chkUpper.Checked;
-            Properties.Settings.Default.Number = chkNumber.Checked;
-            Properties.Settings.Default.Special = chkSpecial.Checked;
-            Properties.Settings.Default.Space = chkSpace.Checked;
-            Properties.Settings.Default.IncludeAll = chkIncludeAll.Checked;
-            Properties.Settings.Default.Length = (int)numLength.Value;
+            Properties.Settings.Default.Lower = chkCryptoLower.Checked;
+            Properties.Settings.Default.Upper = chkCryptoUpper.Checked;
+            Properties.Settings.Default.Number = chkCryptoNumber.Checked;
+            Properties.Settings.Default.Special = chkCryptoSpecial.Checked;
+            Properties.Settings.Default.Space = chkCryptoSpace.Checked;
+            Properties.Settings.Default.IncludeAll = chkCryptoIncludeAll.Checked;
+            Properties.Settings.Default.Length = (int)numCryptoLength.Value;
             Properties.Settings.Default.Save();
         }
 
@@ -89,7 +99,7 @@ namespace JoePitt.PassGen
             int i = 0;
             while (i < 10)
             {
-                Passwords.Add(Generator.Next((int)numLength.Value, chkLower.Checked, chkUpper.Checked, chkNumber.Checked, chkSpecial.Checked, chkSpace.Checked, chkIncludeAll.Checked));
+                Passwords.Add(Generator.Next((int)numCryptoLength.Value, chkCryptoLower.Checked, chkCryptoUpper.Checked, chkCryptoNumber.Checked, chkCryptoSpecial.Checked, chkCryptoSpace.Checked, chkCryptoIncludeAll.Checked));
                 i++;
             }
             // Update UI
@@ -114,20 +124,20 @@ namespace JoePitt.PassGen
             txtCrypto01.Focus();
         }
 
-        private void btnGenerate_Click(object sender, EventArgs e)
+        private void btnCryptoGenerate_Click(object sender, EventArgs e)
         {
             // Save Settings.
-            Properties.Settings.Default.Lower = chkLower.Checked;
-            Properties.Settings.Default.Upper = chkUpper.Checked;
-            Properties.Settings.Default.Number = chkNumber.Checked;
-            Properties.Settings.Default.Special = chkSpecial.Checked;
-            Properties.Settings.Default.Space = chkSpace.Checked;
-            Properties.Settings.Default.IncludeAll = chkIncludeAll.Checked;
-            Properties.Settings.Default.Length = (int)numLength.Value;
+            Properties.Settings.Default.Lower = chkCryptoLower.Checked;
+            Properties.Settings.Default.Upper = chkCryptoUpper.Checked;
+            Properties.Settings.Default.Number = chkCryptoNumber.Checked;
+            Properties.Settings.Default.Special = chkCryptoSpecial.Checked;
+            Properties.Settings.Default.Space = chkCryptoSpace.Checked;
+            Properties.Settings.Default.IncludeAll = chkCryptoIncludeAll.Checked;
+            Properties.Settings.Default.Length = (int)numCryptoLength.Value;
             Properties.Settings.Default.Save();
 
             // Check a Character Set is enabled.
-            if (!chkLower.Checked && !chkUpper.Checked && !chkNumber.Checked && !chkSpecial.Checked && !chkSpace.Checked)
+            if (!chkCryptoLower.Checked && !chkCryptoUpper.Checked && !chkCryptoNumber.Checked && !chkCryptoSpecial.Checked && !chkCryptoSpace.Checked)
             {
                 MessageBox.Show("You must select at least one charater set first.", "No Character Sets Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -143,6 +153,8 @@ namespace JoePitt.PassGen
         }
 
         // Words
+        List<char> WordsFormat = new List<char>() { 'D', 'A', 'N' };
+
         private void BkgWordsGen_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             // Lock UI
@@ -260,6 +272,59 @@ namespace JoePitt.PassGen
             {
                 // Generate Passwords without blocking UI.
                 bkgWordsGen.RunWorkerAsync();
+                tbgGenerators.Focus();
+            }
+        }
+
+        // CVC
+        private void BkgCVCGen_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            // Lock UI
+            Action BlockUI = () => grpCVCSettings.Enabled = false;
+            grpWordsSettings.Invoke(BlockUI);
+
+            // Generate Passwords based on the settings defined.
+            CVCGenerator Generator = new CVCGenerator();
+            List<string> Passwords = new List<string>();
+            int i = 0;
+            while (i < 10)
+            {
+                string Password = Generator.Next((int)numCVCCount.Value);
+                Passwords.Add(Password);
+                i++;
+            }
+            // Update UI
+            BeginInvoke((MethodInvoker)delegate
+            {
+                int j = 0;
+                foreach (TextBox pwBox in tabCVC.Controls.OfType<TextBox>())
+                {
+                    pwBox.Text = Passwords[j];
+                    pwBox.Select(0, 0);
+                    j++;
+                }
+            });
+
+            // Unblock the UI Controls.
+            Action UnblockUI = () => grpCVCSettings.Enabled = true;
+            grpCVCSettings.Invoke(UnblockUI);
+        }
+
+        private void BkgCVCGen_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            tbgGenerators.SelectedTab = tabCVC;
+            txtCVC01.Focus();
+        }
+
+        
+
+        private void btnCVCGenerate_Click(object sender, EventArgs e)
+        {
+            // Prevent exceptions when holding enter for new passwords.
+            if (!bkgCVCGen.IsBusy)
+            {
+                // Generate Passwords without blocking UI.
+                bkgCVCGen.RunWorkerAsync();
                 tbgGenerators.Focus();
             }
         }

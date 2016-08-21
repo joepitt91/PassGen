@@ -115,6 +115,7 @@
       <DependentUpon>frmPassGen.cs</DependentUpon>
     </Compile>
     <Compile Include="Generators\CryptoGenerator.cs" />
+    <Compile Include="Generators\CVCGenerator.cs" />
     <Compile Include="Generators\WordsGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
