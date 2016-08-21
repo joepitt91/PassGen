@@ -377,7 +377,7 @@
             this.tabCrypto.Padding = new System.Windows.Forms.Padding(3);
             this.tabCrypto.Size = new System.Drawing.Size(440, 398);
             this.tabCrypto.TabIndex = 0;
-            this.tabCrypto.Text = "Crypto Random";
+            this.tabCrypto.Text = "Random";
             this.tabCrypto.UseVisualStyleBackColor = true;
             // 
             // tabWords
@@ -398,7 +398,7 @@
             this.tabWords.Padding = new System.Windows.Forms.Padding(3);
             this.tabWords.Size = new System.Drawing.Size(440, 398);
             this.tabWords.TabIndex = 1;
-            this.tabWords.Text = "Random Words";
+            this.tabWords.Text = "Words";
             this.tabWords.UseVisualStyleBackColor = true;
             // 
             // txtWords10
