@@ -7,25 +7,25 @@ using System.Linq;
 namespace UnitTests
 {
     [TestClass]
-    public class CVCTests
+    public class CryptoTests
     {
-        // 3 part CVC
+        // Eight Char Crypto
         [TestMethod]
-        public void CVC_3Part_1Pass()
+        public void Crypto_8Char_1Pass()
         {
-            CVCGenerator TestGenerator = new CVCGenerator();
-            Console.WriteLine(TestGenerator.Next(3));
+            CryptoGenerator TestGenerator = new CryptoGenerator();
+            Console.WriteLine(TestGenerator.Next(8, true, true, true, true, false, true));
         }
 
         [TestMethod]
-        public void CVC_3Part_10Pas()
+        public void Crypto_8Char_10Pass()
         {
             List<string> Passwords = new List<string>();
             int i = 0;
             while (i < 10)
             {
-                CVCGenerator TestGenerator = new CVCGenerator();
-                Passwords.Add(TestGenerator.Next(3));
+                CryptoGenerator TestGenerator = new CryptoGenerator();
+                Passwords.Add(TestGenerator.Next(8, true, true, true, true, false, true));
                 Console.WriteLine(Passwords[i]);
                 i++;
             }
@@ -37,14 +37,14 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void CVC_3Part_100Pass()
+        public void Crypto_8Char_100Pass()
         {
             List<string> Passwords = new List<string>();
             int i = 0;
             while (i < 100)
             {
-                CVCGenerator TestGenerator = new CVCGenerator();
-                Passwords.Add(TestGenerator.Next(3));
+                CryptoGenerator TestGenerator = new CryptoGenerator();
+                Passwords.Add(TestGenerator.Next(8, true, true, true, true, false, true));
                 Console.WriteLine(Passwords[i]);
                 i++;
             }
@@ -55,23 +55,23 @@ namespace UnitTests
             }
         }
 
-        //10 part CVC
+        // 64 Char Crypto
         [TestMethod]
-        public void CVC_10Part_1Pass()
+        public void Crypto_64Char_1Pass()
         {
-            CVCGenerator TestGenerator = new CVCGenerator();
-            Console.WriteLine(TestGenerator.Next(10));
+            CryptoGenerator TestGenerator = new CryptoGenerator();
+            Console.WriteLine(TestGenerator.Next(64, true, true, true, true, false, true));
         }
 
         [TestMethod]
-        public void CVC_10Part_10Pass()
+        public void Crypto_64Char_10Pass()
         {
             List<string> Passwords = new List<string>();
             int i = 0;
             while (i < 10)
             {
-                CVCGenerator TestGenerator = new CVCGenerator();
-                Passwords.Add(TestGenerator.Next(10));
+                CryptoGenerator TestGenerator = new CryptoGenerator();
+                Passwords.Add(TestGenerator.Next(64, true, true, true, true, false, true));
                 Console.WriteLine(Passwords[i]);
                 i++;
             }
@@ -83,14 +83,14 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void CVC_10Part_100Pass()
+        public void Crypto_64Char_100Pass()
         {
             List<string> Passwords = new List<string>();
             int i = 0;
             while (i < 100)
             {
-                CVCGenerator TestGenerator = new CVCGenerator();
-                Passwords.Add(TestGenerator.Next(10));
+                CryptoGenerator TestGenerator = new CryptoGenerator();
+                Passwords.Add(TestGenerator.Next(64, true, true, true, true, false, true));
                 Console.WriteLine(Passwords[i]);
                 i++;
             }
