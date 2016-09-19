@@ -19,7 +19,7 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>W:\www.joepitt.co.uk\Public\Project\PassGen\</PublishUrl>
+    <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -29,14 +29,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://www.joepitt.co.uk/Project/PassGen/</InstallUrl>
-    <UpdateUrl>https://www.joepitt.co.uk/Project/PassGen/</UpdateUrl>
+    <InstallUrl>https://www.joepitt.co.uk/Project/PassGen/Publish/</InstallUrl>
+    <UpdateUrl>https://www.joepitt.co.uk/Project/PassGen/Publish/</UpdateUrl>
     <SupportUrl>https://www.joepitt.co.uk/Project/PassGen/</SupportUrl>
     <TargetCulture>en-GB</TargetCulture>
     <ProductName>PassGen</ProductName>
     <PublisherName>Joe Pitt</PublisherName>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationRevision>1</ApplicationRevision>
     <ApplicationVersion>2.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -69,7 +69,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>5D81F6A4E1FB468A3B97AEB3601A467CDD5E3266</ManifestCertificateThumbprint>
@@ -178,8 +178,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <!-- Sign for External Use -->
-  <Target Name="AfterCompile">
-    <Exec Command="SignTool.exe sign /a /fd SHA256 /i Certum /td SHA256 /tr http://time.certum.pl/ &quot;$(ProjectDir)obj\$(ConfigurationName)\$(TargetFileName)&quot;" />
-  </Target>
 </Project>
