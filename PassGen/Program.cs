@@ -15,7 +15,43 @@ namespace JoePitt.PassGen
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // Upgrade settings as needed
+            if (Properties.Settings.Default.UpgradeRequired)
+            {
+                Properties.Crypto.Default.Upgrade();
+                Properties.Crypto.Default.Save();
+
+                Properties.Words.Default.Upgrade();
+                Properties.Words.Default.Save();
+
+                Properties.CVC.Default.Upgrade();
+                Properties.CVC.Default.Save();
+
+                Properties.Settings.Default.UpgradeRequired = false;
+                Properties.Settings.Default.Save();
+            }
+
             // Words Generator Prep
+            string[] wordsPattern = Properties.Words.Default.Pattern.Split(':');
+            foreach (string part in wordsPattern)
+            {
+                switch (part)
+                {
+                    case "Adjective":
+                        break;
+                    case "Adverb":
+                        break;
+                    case "Noun":
+                        break;
+                    case "Verb":
+                        break;
+                    default:
+                        Properties.Words.Default.Reset();
+                        Properties.Words.Default.Save();
+                        break;
+                }
+            }
+
             string wordsPath = Properties.Words.Default.DictionaryPath;
             if (string.IsNullOrEmpty(wordsPath))
             {
@@ -46,7 +82,7 @@ namespace JoePitt.PassGen
                 if (!wordsAdverbFile) message = message + Environment.NewLine + "Adverbs:" + Environment.NewLine + "    " + wordsPath + "Adverbs.txt";
                 if (!wordsNounFile) message = message + Environment.NewLine + "Nouns:" + Environment.NewLine + "    " + wordsPath + "Nouns.txt";
                 if (!wordsVerbFile) message = message + Environment.NewLine + "Verbs:" + Environment.NewLine + "    " + wordsPath + "Verbs.txt";
-                message = message + Environment.NewLine + Environment.NewLine + 
+                message = message + Environment.NewLine + Environment.NewLine +
                     "If you plan to use the Words Generator it is Strongly Recommended that you click Cancel, install Word Lists and relaunch PassGen (See https://passgen.help.joepitt.co.uk/installation/word-lists.html)" + Environment.NewLine + Environment.NewLine +
                     "Do you want to permanently ignore this Security Warning?";
                 DialogResult response = MessageBox.Show(message, "Security Warning - PassGen", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
