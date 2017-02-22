@@ -8,57 +8,26 @@ using System.Security.Cryptography;
 
 namespace JoePitt.PassGen.Generators
 {
-    public class WordsGenerator
+    public class WordsGenerator : IDisposable
     {
-        private WebClient Client { get; set; }
-        private XmlDocument Reader { get; set; }
-        public bool AdjectiveFile { get; private set; }
-        public bool AdverbFile { get; private set; }
-        public bool NounFile { get; private set; }
-        public bool VerbFile { get; private set; }
-
-        public string DictionaryBase { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PassGen\\";
-
-        public string AdjectiveFilePath { get; private set; }
-        public string AdverbFilePath { get; private set; }
-        public string NounFilePath { get; private set; }
-        public string VerbFilePath { get; private set; }
-
+        private WebClient Client;
+        private XmlDocument Reader;
+        private string WordsPath;
 
         public WordsGenerator()
         {
             Client = new WebClient();
             Client.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
             Reader = new XmlDocument();
-
-            if (File.Exists(DictionaryBase + "Adjectives.txt"))
-            {
-                AdjectiveFile = true;
-                AdjectiveFilePath = DictionaryBase + "Adjectives.txt";
-            }
-            if (File.Exists(DictionaryBase + "Adverbs.txt"))
-            {
-                AdverbFile = true;
-                AdverbFilePath = DictionaryBase + "Adverbs.txt";
-            }
-            if (File.Exists(DictionaryBase + "Nouns.txt"))
-            {
-                NounFile = true;
-                NounFilePath = DictionaryBase + "Nouns.txt";
-            }
-            if (File.Exists(DictionaryBase + "Verbs.txt"))
-            {
-                VerbFile = true;
-                VerbFilePath = DictionaryBase + "Verbs.txt";
-            }
+            WordsPath = Properties.Words.Default.DictionaryPath;
         }
 
         public string Adjective()
         {
-            if (AdjectiveFile)
+            if (Properties.Words.Default.AdjectiveFile)
             {
                 List<string> adjectives = new List<string>();
-                adjectives.AddRange(File.ReadAllLines(AdjectiveFilePath));
+                adjectives.AddRange(File.ReadAllLines(WordsPath + "Adjectives.txt"));
                 RNGCryptoServiceProvider seeder = new RNGCryptoServiceProvider();
                 byte[] seedBytes = new byte[4];
                 seeder.GetBytes(seedBytes);
@@ -90,10 +59,10 @@ namespace JoePitt.PassGen.Generators
 
         public string Adverb()
         {
-            if (AdverbFile)
+            if (Properties.Words.Default.AdverbFile)
             {
                 List<string> adverbs = new List<string>();
-                adverbs.AddRange(File.ReadAllLines(AdverbFilePath));
+                adverbs.AddRange(File.ReadAllLines(WordsPath + "Adverbs.txt"));
                 RNGCryptoServiceProvider seeder = new RNGCryptoServiceProvider();
                 byte[] seedBytes = new byte[4];
                 seeder.GetBytes(seedBytes);
@@ -124,10 +93,10 @@ namespace JoePitt.PassGen.Generators
 
         public string Noun()
         {
-            if (NounFile)
+            if (Properties.Words.Default.NounFile)
             {
                 List<string> nouns = new List<string>();
-                nouns.AddRange(File.ReadAllLines(NounFilePath));
+                nouns.AddRange(File.ReadAllLines(WordsPath + "Nouns.txt"));
                 RNGCryptoServiceProvider seeder = new RNGCryptoServiceProvider();
                 byte[] seedBytes = new byte[4];
                 seeder.GetBytes(seedBytes);
@@ -158,10 +127,10 @@ namespace JoePitt.PassGen.Generators
 
         public string Verb()
         {
-            if (VerbFile)
+            if (Properties.Words.Default.VerbFile)
             {
                 List<string> verbs = new List<string>();
-                verbs.AddRange(File.ReadAllLines(VerbFilePath));
+                verbs.AddRange(File.ReadAllLines(WordsPath + "Verbs.txt"));
                 RNGCryptoServiceProvider seeder = new RNGCryptoServiceProvider();
                 byte[] seedBytes = new byte[4];
                 seeder.GetBytes(seedBytes);
@@ -212,6 +181,20 @@ namespace JoePitt.PassGen.Generators
                 }
             }
             return Password;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Client.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
