@@ -13,11 +13,11 @@ namespace JoePitt.PassGen.Properties {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    internal sealed partial class Words : global::System.Configuration.ApplicationSettingsBase {
         
-        private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
+        private static Words defaultInstance = ((Words)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Words())));
         
-        public static Settings Default {
+        public static Words Default {
             get {
                 return defaultInstance;
             }
@@ -25,85 +25,85 @@ namespace JoePitt.PassGen.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool Lower {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DictionaryPath {
             get {
-                return ((bool)(this["Lower"]));
+                return ((string)(this["DictionaryPath"]));
             }
             set {
-                this["Lower"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool Upper {
-            get {
-                return ((bool)(this["Upper"]));
-            }
-            set {
-                this["Upper"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool Number {
-            get {
-                return ((bool)(this["Number"]));
-            }
-            set {
-                this["Number"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool Special {
-            get {
-                return ((bool)(this["Special"]));
-            }
-            set {
-                this["Special"] = value;
+                this["DictionaryPath"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool Space {
+        public bool SuppressMissingDictionaryWarning {
             get {
-                return ((bool)(this["Space"]));
+                return ((bool)(this["SuppressMissingDictionaryWarning"]));
             }
             set {
-                this["Space"] = value;
+                this["SuppressMissingDictionaryWarning"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool IncludeAll {
+        [global::System.Configuration.DefaultSettingValueAttribute("Adverb:Adjective:Noun")]
+        public string Pattern {
             get {
-                return ((bool)(this["IncludeAll"]));
+                return ((string)(this["Pattern"]));
             }
             set {
-                this["IncludeAll"] = value;
+                this["Pattern"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("8")]
-        public int Length {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AdjectiveFile {
             get {
-                return ((int)(this["Length"]));
+                return ((bool)(this["AdjectiveFile"]));
             }
             set {
-                this["Length"] = value;
+                this["AdjectiveFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AdverbFile {
+            get {
+                return ((bool)(this["AdverbFile"]));
+            }
+            set {
+                this["AdverbFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool NounFile {
+            get {
+                return ((bool)(this["NounFile"]));
+            }
+            set {
+                this["NounFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool VerbFile {
+            get {
+                return ((bool)(this["VerbFile"]));
+            }
+            set {
+                this["VerbFile"] = value;
             }
         }
     }

@@ -2,19 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace JoePitt.PassGen
 {
     public partial class frmPassGen : Form
     {
+        private List<char> wordsFormat;
+
         //General
         public frmPassGen()
         {
             //General
             InitializeComponent();
-            FormClosing += FrmPassGen_FormClosing;
             HelpButtonClicked += FrmPassGen_HelpButtonClicked;
             tbgGenerators.SelectedIndexChanged += TbgGenerators_SelectedIndexChanged;
             //Crypto
@@ -31,19 +31,105 @@ namespace JoePitt.PassGen
         private void frmPassGen_Load(object sender, EventArgs e)
         {
             // Restore Settings. Revert to defaults if there are any errors.
+            //Crypto
             try
             {
-                chkCryptoLower.Checked = Properties.Settings.Default.Lower;
-                chkCryptoUpper.Checked = Properties.Settings.Default.Upper;
-                chkCryptoNumber.Checked = Properties.Settings.Default.Number;
-                chkCryptoSpecial.Checked = Properties.Settings.Default.Special;
-                chkCryptoSpace.Checked = Properties.Settings.Default.Space;
-                chkCryptoIncludeAll.Checked = Properties.Settings.Default.IncludeAll;
-                numCryptoLength.Value = Properties.Settings.Default.Length;
+                chkCryptoLower.Checked = Properties.Crypto.Default.Lower;
+                chkCryptoUpper.Checked = Properties.Crypto.Default.Upper;
+                chkCryptoNumber.Checked = Properties.Crypto.Default.Number;
+                chkCryptoSpecial.Checked = Properties.Crypto.Default.Special;
+                chkCryptoSpace.Checked = Properties.Crypto.Default.Space;
+                chkCryptoIncludeAll.Checked = Properties.Crypto.Default.IncludeAll;
+                numCryptoLength.Value = Properties.Crypto.Default.Length;
             }
             catch
             {
-                Properties.Settings.Default.Reset();
+                Properties.Crypto.Default.Reset();
+                Properties.Crypto.Default.Save();
+            }
+
+            //Words
+            if (!Properties.Words.Default.AdjectiveFile || !Properties.Words.Default.AdverbFile || !Properties.Words.Default.NounFile || !Properties.Words.Default.VerbFile)
+            {
+                foreach (TextBox pwBox in tabWords.Controls.OfType<TextBox>())
+                {
+                    pwBox.BackColor = System.Drawing.Color.PaleVioletRed;
+                    pwBox.ForeColor = System.Drawing.Color.White;
+                }
+            }
+
+            try
+            {
+                string formatString = Properties.Words.Default.Pattern;
+                wordsFormat = new List<char>();
+
+                foreach (string Type in formatString.Split(':').ToList())
+                {
+                    switch (Type)
+                    {
+                        case "Adjective":
+                            wordsFormat.Add('A');
+                            txtWordsFormat.Text = txtWordsFormat.Text + Type;
+                            break;
+                        case "Adverb":
+                            wordsFormat.Add('D');
+                            txtWordsFormat.Text = txtWordsFormat.Text + Type;
+                            break;
+                        case "Noun":
+                            wordsFormat.Add('N');
+                            txtWordsFormat.Text = txtWordsFormat.Text + Type;
+                            break;
+                        case "Verb":
+                            wordsFormat.Add('V');
+                            txtWordsFormat.Text = txtWordsFormat.Text + Type;
+                            break;
+                        default:
+                            throw new FormatException("Unknown Word Type: " + Type);
+                    }
+                }
+            }
+            catch
+            {
+                Properties.Words.Default.Reset();
+                Properties.Words.Default.Save();
+                string formatString = Properties.Words.Default.Pattern;
+                wordsFormat = new List<char>();
+
+                foreach (string Type in formatString.Split(':').ToList())
+                {
+                    switch (Type)
+                    {
+                        case "Adjective":
+                            wordsFormat.Add('A');
+                            txtWordsFormat.Text = txtWordsFormat.Text + "Adjective";
+                            break;
+                        case "Adverb":
+                            wordsFormat.Add('D');
+                            txtWordsFormat.Text = txtWordsFormat.Text + "Adverb";
+                            break;
+                        case "Noun":
+                            wordsFormat.Add('N');
+                            txtWordsFormat.Text = txtWordsFormat.Text + "Noun";
+                            break;
+                        case "Verb":
+                            wordsFormat.Add('V');
+                            txtWordsFormat.Text = txtWordsFormat.Text + "Verb";
+                            break;
+                        default:
+                            throw new FormatException("Unknown Word Type: " + Type);
+                    }
+                }
+            }
+
+            //CVC
+            try
+            {
+                numCVCCount.Value = Properties.CVC.Default.Count;
+            }
+            catch
+            {
+                Properties.CVC.Default.Reset();
+                Properties.CVC.Default.Save();
             }
         }
 
@@ -72,19 +158,6 @@ namespace JoePitt.PassGen
                 CancelButton = btnCVCGenerate;
             }
         }
-        
-        private void FrmPassGen_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // Save Settings.
-            Properties.Settings.Default.Lower = chkCryptoLower.Checked;
-            Properties.Settings.Default.Upper = chkCryptoUpper.Checked;
-            Properties.Settings.Default.Number = chkCryptoNumber.Checked;
-            Properties.Settings.Default.Special = chkCryptoSpecial.Checked;
-            Properties.Settings.Default.Space = chkCryptoSpace.Checked;
-            Properties.Settings.Default.IncludeAll = chkCryptoIncludeAll.Checked;
-            Properties.Settings.Default.Length = (int)numCryptoLength.Value;
-            Properties.Settings.Default.Save();
-        }
 
         // Crypto
         private void bkgCryptoGen_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -92,6 +165,16 @@ namespace JoePitt.PassGen
             // Block the UI Controls.
             Action BlockUI = () => grpCryptoSettings.Enabled = false;
             grpCryptoSettings.Invoke(BlockUI);
+
+            // Save Settings
+            Properties.Crypto.Default.Lower = chkCryptoLower.Checked;
+            Properties.Crypto.Default.Upper = chkCryptoUpper.Checked;
+            Properties.Crypto.Default.Number = chkCryptoNumber.Checked;
+            Properties.Crypto.Default.Special = chkCryptoSpecial.Checked;
+            Properties.Crypto.Default.Space = chkCryptoSpace.Checked;
+            Properties.Crypto.Default.IncludeAll = chkCryptoIncludeAll.Checked;
+            Properties.Crypto.Default.Length = (int)numCryptoLength.Value;
+            Properties.Crypto.Default.Save();
 
             // Generate Passwords based on the settings defined.
             CryptoGenerator Generator = new CryptoGenerator();
@@ -127,16 +210,6 @@ namespace JoePitt.PassGen
 
         private void btnCryptoGenerate_Click(object sender, EventArgs e)
         {
-            // Save Settings.
-            Properties.Settings.Default.Lower = chkCryptoLower.Checked;
-            Properties.Settings.Default.Upper = chkCryptoUpper.Checked;
-            Properties.Settings.Default.Number = chkCryptoNumber.Checked;
-            Properties.Settings.Default.Special = chkCryptoSpecial.Checked;
-            Properties.Settings.Default.Space = chkCryptoSpace.Checked;
-            Properties.Settings.Default.IncludeAll = chkCryptoIncludeAll.Checked;
-            Properties.Settings.Default.Length = (int)numCryptoLength.Value;
-            Properties.Settings.Default.Save();
-
             // Check a Character Set is enabled.
             if (!chkCryptoLower.Checked && !chkCryptoUpper.Checked && !chkCryptoNumber.Checked && !chkCryptoSpecial.Checked && !chkCryptoSpace.Checked)
             {
@@ -154,13 +227,34 @@ namespace JoePitt.PassGen
         }
 
         // Words
-        List<char> WordsFormat = new List<char>() { 'D', 'A', 'N' };
-
         private void BkgWordsGen_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             // Lock UI
             Action BlockUI = () => grpWordsSettings.Enabled = false;
             grpWordsSettings.Invoke(BlockUI);
+
+            // Save Settings
+            string savePattern = "";
+            foreach (char component in wordsFormat)
+            {
+                switch (component)
+                {
+                    case 'A':
+                        savePattern = savePattern + "Adjective";
+                        break;
+                    case 'D':
+                        savePattern = savePattern + "Adverb";
+                        break;
+                    case 'N':
+                        savePattern = savePattern + "Noun";
+                        break;
+                    case 'V':
+                        savePattern = savePattern + "Verb";
+                        break;
+                }
+                Properties.Words.Default.Pattern = savePattern;
+                Properties.Words.Default.Save();
+            }
 
             // Generate Passwords based on the settings defined.
             WordsGenerator Generator = new WordsGenerator();
@@ -168,7 +262,7 @@ namespace JoePitt.PassGen
             int i = 0;
             while (i < 10)
             {
-                Passwords.Add(Generator.Next(WordsFormat));
+                Passwords.Add(Generator.Next(wordsFormat));
                 i++;
             }
             // Update UI
@@ -177,6 +271,13 @@ namespace JoePitt.PassGen
                 int j = 0;
                 foreach (TextBox pwBox in tabWords.Controls.OfType<TextBox>())
                 {
+                    if ( j == 0)
+                    {
+                        ToolTip Warning = new ToolTip();
+                        Warning.ToolTipIcon = ToolTipIcon.Warning;
+                        Warning.ToolTipTitle = "Internet Generated";
+                        Warning.Show("Warning, these passwords have been generated from the internet.", txtWords01, 0, 0, 15000);
+                    }
                     pwBox.Text = Passwords[j];
                     pwBox.Select(0, 0);
                     j++;
@@ -197,7 +298,7 @@ namespace JoePitt.PassGen
         private void UpdateWordsFormat()
         {
             txtWordsFormat.Text = "";
-            foreach (char Type in WordsFormat)
+            foreach (char Type in wordsFormat)
             {
                 switch (Type)
                 {
@@ -219,36 +320,40 @@ namespace JoePitt.PassGen
 
         private void btnAdjective_Click(object sender, EventArgs e)
         {
-            WordsFormat.Add('A');
+            wordsFormat.Add('A');
             UpdateWordsFormat();
         }
 
         private void btnAdverb_Click(object sender, EventArgs e)
         {
-            WordsFormat.Add('D');
+            wordsFormat.Add('D');
             UpdateWordsFormat();
         }
 
         private void btnNoun_Click(object sender, EventArgs e)
         {
-            WordsFormat.Add('N');
+            wordsFormat.Add('N');
             UpdateWordsFormat();
         }
 
         private void btnVerb_Click(object sender, EventArgs e)
         {
-            WordsFormat.Add('V');
+            wordsFormat.Add('V');
             UpdateWordsFormat();
         }
 
         private void btnWordsClear_Click(object sender, EventArgs e)
         {
-            WordsFormat.Clear();
+            wordsFormat.Clear();
             UpdateWordsFormat();
         }
 
         private void btnGenerateWords_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(txtWordsFormat.Text))
+            {
+                MessageBox.Show("No format string set, add some word types first, e.g. AdverbAdjectiveNoun", "Word Generator - PassGen", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
             // Prevent exceptions when holding enter for new passwords.
             if (!bkgWordsGen.IsBusy)
             {
@@ -264,6 +369,10 @@ namespace JoePitt.PassGen
             // Lock UI
             Action BlockUI = () => grpCVCSettings.Enabled = false;
             grpWordsSettings.Invoke(BlockUI);
+
+            // Save Settings
+            Properties.CVC.Default.Count = (int)numCVCCount.Value;
+            Properties.CVC.Default.Save();
 
             // Generate Passwords based on the settings defined.
             CVCGenerator Generator = new CVCGenerator();
@@ -297,8 +406,6 @@ namespace JoePitt.PassGen
             tbgGenerators.SelectedTab = tabCVC;
             txtCVC01.Focus();
         }
-
-        
 
         private void btnCVCGenerate_Click(object sender, EventArgs e)
         {
