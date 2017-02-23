@@ -5,7 +5,6 @@ Generates passwords in various formats, Crypto Random, Random Words and CVC Form
 
 ## Links
 * [Project Page](https://www.joepitt.co.uk/Project/PassGen/)
-* [BugTrac](https://bugs.joepitt.co.uk/PassGen/)
 
 ## Usage
 1. Select a Generator from the top tabs
