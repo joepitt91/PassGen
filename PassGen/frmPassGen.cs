@@ -1,6 +1,8 @@
 ﻿using JoePitt.PassGen.Generators;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -15,7 +17,6 @@ namespace JoePitt.PassGen
         {
             //General
             InitializeComponent();
-            HelpButtonClicked += FrmPassGen_HelpButtonClicked;
             tbgGenerators.SelectedIndexChanged += TbgGenerators_SelectedIndexChanged;
             //Crypto
             bkgCryptoGen.DoWork += bkgCryptoGen_DoWork;
@@ -30,6 +31,7 @@ namespace JoePitt.PassGen
 
         private void frmPassGen_Load(object sender, EventArgs e)
         {
+            txtAboutGeneral.Select(0, 0);
             // Restore Settings. Revert to defaults if there are any errors.
             //Crypto
             try
@@ -133,29 +135,26 @@ namespace JoePitt.PassGen
             }
         }
 
-        private void FrmPassGen_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            AboutBox dlgAbout = new AboutBox();
-            dlgAbout.ShowDialog();
-            e.Cancel = true;
-        }
-
         private void TbgGenerators_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (tbgGenerators.SelectedTab == tabCrypto)
+            switch (tbgGenerators.SelectedIndex)
             {
-                AcceptButton = btnCryptoGenerate;
-                CancelButton = btnCryptoGenerate;
-            }
-            else if (tbgGenerators.SelectedTab == tabWords)
-            {
-                AcceptButton = btnWordsGenerate;
-                CancelButton = btnWordsGenerate;
-            }
-            else if (tbgGenerators.SelectedTab == tabCVC)
-            {
-                AcceptButton = btnCVCGenerate;
-                CancelButton = btnCVCGenerate;
+                case 0:
+                    AcceptButton = btnCryptoGenerate;
+                    CancelButton = btnCryptoGenerate;
+                    break;
+                case 1:
+                    AcceptButton = btnWordsGenerate;
+                    CancelButton = btnWordsGenerate;
+                    break;
+                case 2:
+                    AcceptButton = btnCVCGenerate;
+                    CancelButton = btnCVCGenerate;
+                    break;
+                default:
+                    AcceptButton = null;
+                    CancelButton = null;
+                    break;
             }
         }
 
@@ -216,7 +215,7 @@ namespace JoePitt.PassGen
                 MessageBox.Show("You must select at least one charater set first.", "No Character Sets Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
+            
             // Prevent exceptions when holding enter for new passwords.
             if (!bkgCryptoGen.IsBusy)
             {
@@ -240,21 +239,21 @@ namespace JoePitt.PassGen
                 switch (component)
                 {
                     case 'A':
-                        savePattern = savePattern + "Adjective";
+                        savePattern = savePattern + ":Adjective";
                         break;
                     case 'D':
-                        savePattern = savePattern + "Adverb";
+                        savePattern = savePattern + ":Adverb";
                         break;
                     case 'N':
-                        savePattern = savePattern + "Noun";
+                        savePattern = savePattern + ":Noun";
                         break;
                     case 'V':
-                        savePattern = savePattern + "Verb";
+                        savePattern = savePattern + ":Verb";
                         break;
                 }
-                Properties.Words.Default.Pattern = savePattern;
-                Properties.Words.Default.Save();
             }
+            Properties.Words.Default.Pattern = savePattern.Substring(1);
+            Properties.Words.Default.Save();
 
             // Generate Passwords based on the settings defined.
             WordsGenerator Generator = new WordsGenerator();
@@ -265,19 +264,13 @@ namespace JoePitt.PassGen
                 Passwords.Add(Generator.Next(wordsFormat));
                 i++;
             }
+            Generator.Dispose();
             // Update UI
             BeginInvoke((MethodInvoker)delegate
             {
                 int j = 0;
                 foreach (TextBox pwBox in tabWords.Controls.OfType<TextBox>())
                 {
-                    if ( j == 0)
-                    {
-                        ToolTip Warning = new ToolTip();
-                        Warning.ToolTipIcon = ToolTipIcon.Warning;
-                        Warning.ToolTipTitle = "Internet Generated";
-                        Warning.Show("Warning, these passwords have been generated from the internet.", txtWords01, 0, 0, 15000);
-                    }
                     pwBox.Text = Passwords[j];
                     pwBox.Select(0, 0);
                     j++;
@@ -293,6 +286,14 @@ namespace JoePitt.PassGen
         {
             tbgGenerators.SelectedTab = tabWords;
             txtWords01.Focus();
+            if (!Properties.Words.Default.AdjectiveFile || !Properties.Words.Default.AdverbFile ||
+                !Properties.Words.Default.NounFile || !Properties.Words.Default.VerbFile)
+            {
+                ToolTip Warning = new ToolTip();
+                Warning.ToolTipIcon = ToolTipIcon.Warning;
+                Warning.ToolTipTitle = "Internet Generated";
+                Warning.Show("Warning, these passwords have been generated from the internet.", txtWords01, 0, 0, 15000);
+            }
         }
 
         private void UpdateWordsFormat()
@@ -416,6 +417,70 @@ namespace JoePitt.PassGen
                 bkgCVCGen.RunWorkerAsync();
                 tbgGenerators.Focus();
             }
+        }
+
+        // About Tab
+        private void lnkProjectPage_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://www.joepitt.co.uk/Project/PassGen/");
+        }
+
+        private void lnkUserGuideOnline_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://passgen.help.joepitt.co.uk/");
+        }
+
+        private void lnkUserGuideOffline_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("Resources\\PassGen-UserGuide.pdf");
+        }
+
+        private void lnkSourceCode_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/joepitt91/PassGen");
+        }
+
+        private void lnkDonate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=donations@joepitt.co.uk&lc=GB&item_name=PassGen%20Donation%20%28Joe%20Pitt%29&currency_code=GBP&bn=PP-DonationsBF");
+        }
+
+        private void btnResetAll_Click(object sender, EventArgs e)
+        {
+            // Crypto
+            Properties.Crypto.Default.Reset();
+            Properties.Crypto.Default.Save();
+
+            // Words
+            Properties.Words.Default.Reset();
+            Properties.Words.Default.Save();
+
+            // CVC
+            Properties.CVC.Default.Reset();
+            Properties.CVC.Default.Save();
+
+            Application.Restart();
+        }
+
+        private void btnResetCrypto_Click(object sender, EventArgs e)
+        {
+            Properties.Crypto.Default.Reset();
+            Properties.Crypto.Default.Save();
+            Application.Restart();
+        }
+
+        private void btnResetWords_Click(object sender, EventArgs e)
+        {
+            Properties.Words.Default.Reset();
+            Properties.Words.Default.Save();
+            Application.Restart();
+        }
+
+        private void btnResetCVC_Click(object sender, EventArgs e)
+        {
+            Properties.CVC.Default.Reset();
+            Properties.CVC.Default.Save();
+            Application.Restart();
         }
     }
 }
